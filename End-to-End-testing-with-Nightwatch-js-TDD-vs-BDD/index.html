@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <meta charset="utf-8">
+    
+    <title>End-to-End testing with Nightwatch.js: TDD vs BDD | Yet Another Open Source Blog by Badacadabra | Baptiste Vannesson</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="Have you ever heard of Nightwatch.js, the well-known “Node.js powered End-to-End testing framework“? Here we will experiment with the two main testing components of Nightwatch, dealing with the classi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="End-to-End testing with Nightwatch.js: TDD vs BDD">
+<meta property="og:url" content="https://badacadabra.github.io/End-to-End-testing-with-Nightwatch-js-TDD-vs-BDD/index.html">
+<meta property="og:site_name" content="Yet Another Open Source Blog by Badacadabra | Baptiste Vannesson">
+<meta property="og:description" content="Have you ever heard of Nightwatch.js, the well-known “Node.js powered End-to-End testing framework“? Here we will experiment with the two main testing components of Nightwatch, dealing with the classi">
+<meta property="og:image" content="https://badacadabra.github.io/images/javascript.png">
+<meta property="og:updated_time" content="2017-06-13T21:43:15.613Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="End-to-End testing with Nightwatch.js: TDD vs BDD">
+<meta name="twitter:description" content="Have you ever heard of Nightwatch.js, the well-known “Node.js powered End-to-End testing framework“? Here we will experiment with the two main testing components of Nightwatch, dealing with the classi">
+<meta name="twitter:image" content="https://badacadabra.github.io/images/javascript.png">
+    
+
+    
+        <link rel="alternate" href="/atom.xml" title="Yet Another Open Source Blog by Badacadabra | Baptiste Vannesson" type="application/atom+xml" />
+    
+
+    
+        <link rel="icon" href="https://avatars1.githubusercontent.com/u/6485527?v=3&s=32" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+        <script type="text/javascript">
+(function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-93708400-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+    
+    
+        <meta name="google-site-verification" content="eTdBh__NBhZgjxD009CnQkXjmlTdIVnfZjgbeyd_c7o" />
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <!-- <a href="/" id="logo">
+                
+                <span class="site-title">Yet Another Open Source Blog by Badacadabra | Baptiste Vannesson</span>
+            </a> -->
+            <a href="http://www.badacadabra.net" target="_blank" id="logo">
+              <span class="site-title">Badacadabra</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">Home</a>
+                
+                    <a class="main-nav-link" href="/archives">Archives</a>
+                
+                    <a class="main-nav-link" href="/about">About</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/images/baptiste-vannesson.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">Home</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">Archives</a></td>
+                
+                    <td><a class="main-nav-link" href="/about">About</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="Search" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/images/baptiste-vannesson.png" />
+            <h2 id="name">Baptiste Vannesson</h2>
+            <h3 id="title">FLOSS Enthusiast</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>France</span>
+            <!-- <a id="follow" target="_blank" href="https://github.com/Badacadabra">FOLLOW</a> -->
+          <a target="_blank" href="https://stackoverflow.com/users/6910253/badacadabra">
+            <img src="https://stackoverflow.com/users/flair/6910253.png?theme=clean" width="208" height="58" alt="profile for Badacadabra at Stack Overflow, Q&amp;A for professional and enthusiast programmers" title="profile for Badacadabra at Stack Overflow, Q&amp;A for professional and enthusiast programmers" style="display:flex;margin:auto;padding-top:20px;">
+          </a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                5
+                <span>posts</span>
+            </div>
+            <div class="article-info-block">
+                19
+                <span>tags</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/Badacadabra" target="_blank" title="github" class=tooltip>
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://stackexchange.com/users/9306921/badacadabra" target="_blank" title="stack-exchange" class=tooltip>
+                            <i class="fa fa-stack-exchange"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://twitter.com/Badacadabra" target="_blank" title="twitter" class=tooltip>
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://fr.linkedin.com/in/baptistevannesson/en" target="_blank" title="linkedin" class=tooltip>
+                            <i class="fa fa-linkedin"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://fr.pinterest.com/badacadabra1337/" target="_blank" title="pinterest" class=tooltip>
+                            <i class="fa fa-pinterest"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://www.facebook.com/badacadabra.net/" target="_blank" title="facebook" class=tooltip>
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="/atom.xml" target="_blank" title="rss" class=tooltip>
+                            <i class="fa fa-rss"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-End-to-End-testing-with-Nightwatch-js-TDD-vs-BDD" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            End-to-End testing with Nightwatch.js: TDD vs BDD
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/End-to-End-testing-with-Nightwatch-js-TDD-vs-BDD/">
+            <time datetime="2017-06-13T21:43:15.000Z" itemprop="datePublished">2017-06-13</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/JavaScript/">JavaScript</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Automation/">Automation</a>, <a class="tag-link" href="/tags/BDD/">BDD</a>, <a class="tag-link" href="/tags/Nightwatch-js/">Nightwatch.js</a>, <a class="tag-link" href="/tags/Selenium/">Selenium</a>, <a class="tag-link" href="/tags/TDD/">TDD</a>, <a class="tag-link" href="/tags/Testing/">Testing</a>, <a class="tag-link" href="/tags/WebDriver/">WebDriver</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>Have you ever heard of <strong>Nightwatch.js</strong>, the well-known “<em>Node.js powered End-to-End testing framework</em>“? Here we will experiment with the two main testing components of Nightwatch, dealing with the classicism of <strong>Test-Driven Development</strong> (TDD) and the agility of <strong>Behavior-Driven Development</strong> (BDD).</p>
+<p>To be consistent, let’s test the <a href="http://nightwatchjs.org/" target="_blank" rel="external">Nightwatch</a> official website!</p>
+<a id="more"></a>
+<h2 id="Nightwatch-js-what-for"><a href="#Nightwatch-js-what-for" class="headerlink" title="Nightwatch.js: what for?"></a>Nightwatch.js: what for?</h2><p><strong>End-to-End testing</strong> is a key step in software development process. E2E tests are not the most complete ones because it is impossible to cover everything in an app at the top of the <strong>testing pyramid</strong>. E2E tests are generally slow and resource-intensive. However, they are richer than any other type of test because they bring all components together and consider the application as a whole. For this reason, E2E testing is often performed as <strong>acceptance testing</strong>.</p>
+<p>Contrary to other popular testing solutions like <strong>CasperJS</strong> which works on top of <strong>PhantomJS</strong> or <strong>SlimerJS</strong>, Nightwatch has been designed to work with <em>real</em> web browsers using <strong>Selenium/WebDriver</strong>. Thanks to Nightwatch, it is possible to control, remotely and programmatically, true instances of Firefox or Chromium.</p>
+<p>Nightwatch testing API is based on two testing components: <strong>Assert</strong> and <strong>Expect</strong>. To test the Nightwatch website, we are going to use both, but we first need to give the specs.</p>
+<h2 id="Specifications"><a href="#Specifications" class="headerlink" title="Specifications"></a>Specifications</h2><p>We need a <strong>test suite</strong> with two independent <strong>test cases</strong> that verify the following scenarios:</p>
+<h3 id="Home-page"><a href="#Home-page" class="headerlink" title="Home page"></a>Home page</h3><ol>
+<li>Go to <a href="http://nightwatchjs.org" target="_blank" rel="external">http://nightwatchjs.org</a></li>
+<li>Wait for the DOM to be ready</li>
+<li>Check if page title is “Nightwatch.js | Node.js powered End-to-End testing framework”</li>
+<li>Check if navigation is visible</li>
+<li>Check if navigation contains a contact link</li>
+<li>Log all items from navigation</li>
+<li>Check if the “API Reference” link references the right page</li>
+<li>Click that link</li>
+<li>Check if page title is “API Reference | Nightwatch.js”</li>
+<li>Take a screenshot</li>
+</ol>
+<h3 id="API-Reference"><a href="#API-Reference" class="headerlink" title="API Reference"></a>API Reference</h3><ol>
+<li>Go to <a href="http://nightwatchjs.org/api" target="_blank" rel="external">http://nightwatchjs.org/api</a></li>
+<li>Wait for the DOM to be ready</li>
+<li>Check if the main container has the “secondary” class</li>
+<li>Check if the main title is “API Reference”</li>
+<li>Check if there are four items in the sidebar menu</li>
+<li>Check if the sidebar menu contains “Assert” or “Expect”</li>
+<li>Take a screenshot</li>
+<li>Close the test suite</li>
+</ol>
+<h2 id="Nightwatch-with-Assert-TDD"><a href="#Nightwatch-with-Assert-TDD" class="headerlink" title="Nightwatch with Assert (TDD)"></a>Nightwatch with Assert (TDD)</h2><p>The Assert API is an extension of the <strong>Node.js</strong> <code>assert</code> module.</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// TDD-style suite with "assert"</span></div><div class="line"></div><div class="line"><span class="keyword">var</span> assert = <span class="built_in">require</span>(<span class="string">'assert'</span>);</div><div class="line"></div><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line">  <span class="comment">// First test case</span></div><div class="line">  <span class="string">'Home'</span>: <span class="function"><span class="keyword">function</span> (<span class="params">browser</span>) </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">logNav</span>(<span class="params">items</span>) </span>&#123;</div><div class="line">      <span class="built_in">console</span>.log(<span class="string">'\nNAVIGATION\n'</span>);</div><div class="line">      items.value.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">item</span>) </span>&#123;</div><div class="line">        browser.elementIdText(item.ELEMENT, <span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</div><div class="line">          <span class="built_in">console</span>.log(res.value);</div><div class="line">        &#125;);</div><div class="line">      &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    browser</div><div class="line">      .url(<span class="string">'http://nightwatchjs.org/'</span>)</div><div class="line">      .waitForElementPresent(<span class="string">'body'</span>, <span class="number">1000</span>)</div><div class="line">      .assert.title(<span class="string">'Nightwatch.js | Node.js powered End-to-End testing framework'</span>)</div><div class="line">      .assert.visible(<span class="string">'.navbar ul.nav'</span>)</div><div class="line">      .assert.containsText(<span class="string">'.navbar ul.nav'</span>, <span class="string">'Contact'</span>)</div><div class="line">      .elements(<span class="string">'css selector'</span>, <span class="string">'.navbar ul.nav li'</span>, logNav)</div><div class="line">      .assert.attributeContains(<span class="string">'.navbar ul.nav li:nth-of-type(4) a'</span>, <span class="string">'href'</span>, <span class="string">'/api'</span>)</div><div class="line">      .click(<span class="string">'.navbar ul.nav li:nth-of-type(4)'</span>)</div><div class="line">      .assert.title(<span class="string">'API Reference | Nightwatch.js'</span>)</div><div class="line">      .screenshot();</div><div class="line">  &#125;,</div><div class="line"></div><div class="line">  <span class="comment">// Second test case</span></div><div class="line">  <span class="string">'API Reference'</span>: <span class="function"><span class="keyword">function</span> (<span class="params">browser</span>) </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">var</span> sidebarMenu = <span class="string">'#api-container .bs-sidebar &gt; ul &gt; li'</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">testSidebar</span>(<span class="params">items</span>) </span>&#123;</div><div class="line">      assert.equal(items.value.length, <span class="number">4</span>); <span class="comment">// Node.js "assert" module</span></div><div class="line">      browser.assert.containsText(sidebarMenu + <span class="string">':nth-of-type(2)'</span>, <span class="string">'Assert'</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    browser</div><div class="line">      .url(<span class="string">'http://nightwatchjs.org/api'</span>)</div><div class="line">      .waitForElementPresent(<span class="string">'body'</span>, <span class="number">1000</span>)</div><div class="line">      .assert.containsText(<span class="string">'#api-container h1'</span>, <span class="string">'API Reference'</span>)</div><div class="line">      .elements(<span class="string">'css selector'</span>, sidebarMenu, testSidebar)</div><div class="line">      .screenshot()</div><div class="line">      .end();</div><div class="line">  &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h2 id="Nightwatch-with-Expect-BDD"><a href="#Nightwatch-with-Expect-BDD" class="headerlink" title="Nightwatch with Expect (BDD)"></a>Nightwatch with Expect (BDD)</h2><p>The Expect API is an extension of the <strong>Chai</strong> <code>expect</code> library.</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="comment">// BDD-style suite with "expect"</span></div><div class="line"></div><div class="line"><span class="keyword">var</span> expect = <span class="built_in">require</span>(<span class="string">'chai'</span>).expect;</div><div class="line"></div><div class="line"><span class="built_in">module</span>.exports = &#123;</div><div class="line">  <span class="comment">// First test case</span></div><div class="line">  <span class="string">'Home'</span>: <span class="function"><span class="keyword">function</span> (<span class="params">browser</span>) </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">logNav</span>(<span class="params">items</span>) </span>&#123;</div><div class="line">      <span class="built_in">console</span>.log(<span class="string">'\nNAVIGATION\n'</span>);</div><div class="line">      items.value.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">item</span>) </span>&#123;</div><div class="line">        browser.elementIdText(item.ELEMENT, <span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</div><div class="line">          <span class="built_in">console</span>.log(res.value);</div><div class="line">        &#125;);</div><div class="line">      &#125;);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    browser.url(<span class="string">'http://nightwatchjs.org/'</span>);</div><div class="line">    browser.waitForElementPresent(<span class="string">'body'</span>, <span class="number">1000</span>);</div><div class="line">    browser.expect.element(<span class="string">'title'</span>).text.to.equal(<span class="string">'Nightwatch.js | Node.js powered End-to-End testing framework'</span>);</div><div class="line">    browser.expect.element(<span class="string">'.navbar ul.nav'</span>).to.be.visible;</div><div class="line">    browser.expect.element(<span class="string">'.navbar ul.nav'</span>).text.to.contain(<span class="string">'Contact'</span>);</div><div class="line">    browser.elements(<span class="string">'css selector'</span>, <span class="string">'.navbar ul.nav li'</span>, logNav);</div><div class="line">    browser.expect.element(<span class="string">'.navbar ul.nav li:nth-of-type(4) a'</span>).to.have.attribute(<span class="string">'href'</span>).which.contains(<span class="string">'/api'</span>);</div><div class="line">    browser.click(<span class="string">'.navbar ul.nav li:nth-of-type(4)'</span>);</div><div class="line">    browser.expect.element(<span class="string">'title'</span>).text.to.equal(<span class="string">'API Reference | Nightwatch.js'</span>);</div><div class="line">    browser.screenshot();</div><div class="line">  &#125;,</div><div class="line"></div><div class="line">  <span class="comment">// Second test case</span></div><div class="line">  <span class="string">'API Reference'</span>: <span class="function"><span class="keyword">function</span> (<span class="params">browser</span>) </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">var</span> sidebarMenu = <span class="string">'#api-container .bs-sidebar &gt; ul &gt; li'</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">testSidebar</span>(<span class="params">items</span>) </span>&#123;</div><div class="line">      expect(items.value.length).to.equal(<span class="number">4</span>); <span class="comment">// Chai module</span></div><div class="line">      browser.expect.element(sidebarMenu + <span class="string">':nth-of-type(1)'</span>).text.to.contain(<span class="string">'Expect'</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    browser.url(<span class="string">'http://nightwatchjs.org/api'</span>);</div><div class="line">    browser.waitForElementPresent(<span class="string">'body'</span>, <span class="number">1000</span>);</div><div class="line">    browser.expect.element(<span class="string">'#api-container h1'</span>).text.to.contain(<span class="string">'API Reference'</span>);</div><div class="line">    browser.elements(<span class="string">'css selector'</span>, sidebarMenu, testSidebar);</div><div class="line">    browser.screenshot();</div><div class="line">    browser.end();</div><div class="line">  &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Nightwatch.js is a powerful and easy-to-use testing framework. This is a wise choice for your end-to-end tests, even though there are many serious alternatives like <a href="http://webdriver.io/" target="_blank" rel="external">WebdriverIO</a>, <a href="http://www.protractortest.org/" target="_blank" rel="external">Protractor</a> or <a href="http://dalekjs.com/" target="_blank" rel="external">DalekJS</a>. It is worth a try!</p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+    <a data-url="https://badacadabra.github.io/End-to-End-testing-with-Nightwatch-js-TDD-vs-BDD/" data-id="cj3w3glh70005aic6dtb2x1cj" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+        <a href="https://badacadabra.github.io/End-to-End-testing-with-Nightwatch-js-TDD-vs-BDD/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://badacadabra.github.io/End-to-End-testing-with-Nightwatch-js-TDD-vs-BDD/">Comments</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/What-if-JavaScript-was-a-Java-scripting-language/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Older</strong>
+            <div class="article-nav-title">What if JavaScript was a Java scripting language?</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+    
+    </section>
+
+</section>
+            
+                <aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">recent</h3>
+        <div class="widget">
+            <ul id="recent-post" class="">
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/End-to-End-testing-with-Nightwatch-js-TDD-vs-BDD/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/javascript.png)" alt="End-to-End testing with Nightwatch.js: TDD vs BDD" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/JavaScript/">JavaScript</a></p>
+                            <p class="item-title"><a href="/End-to-End-testing-with-Nightwatch-js-TDD-vs-BDD/" class="title">End-to-End testing with Nightwatch.js: TDD vs BDD</a></p>
+                            <p class="item-date"><time datetime="2017-06-13T21:43:15.000Z" itemprop="datePublished">2017-06-13</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/What-if-JavaScript-was-a-Java-scripting-language/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/javascript.png)" alt="What if JavaScript was a Java scripting language?" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/JavaScript/">JavaScript</a></p>
+                            <p class="item-title"><a href="/What-if-JavaScript-was-a-Java-scripting-language/" class="title">What if JavaScript was a Java scripting language?</a></p>
+                            <p class="item-date"><time datetime="2017-06-08T21:51:28.000Z" itemprop="datePublished">2017-06-08</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Building-a-visual-form-in-your-terminal-emulator-with-Blessed/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/javascript.png)" alt="Building a visual form in your terminal emulator with Blessed" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/JavaScript/">JavaScript</a></p>
+                            <p class="item-title"><a href="/Building-a-visual-form-in-your-terminal-emulator-with-Blessed/" class="title">Building a visual form in your terminal emulator with Blessed</a></p>
+                            <p class="item-date"><time datetime="2017-06-05T21:52:43.000Z" itemprop="datePublished">2017-06-05</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Scraping-a-Ghost-blog-with-PhantomJS-and-SlimerJS-using-CasperJS/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/javascript.png)" alt="Scraping a Ghost blog with PhantomJS and SlimerJS using CasperJS" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/JavaScript/">JavaScript</a></p>
+                            <p class="item-title"><a href="/Scraping-a-Ghost-blog-with-PhantomJS-and-SlimerJS-using-CasperJS/" class="title">Scraping a Ghost blog with PhantomJS and SlimerJS using CasperJS</a></p>
+                            <p class="item-date"><time datetime="2017-06-03T00:19:49.000Z" itemprop="datePublished">2017-06-03</time></p>
+                        </div>
+                    </li>
+                
+                    <li>
+                        
+                        <div class="item-thumbnail">
+                            <a href="/Understanding-JSFuck/" class="thumbnail">
+    
+    
+        <span style="background-image:url(/images/javascript.png)" alt="Understanding JSFuck" class="thumbnail-image"></span>
+    
+</a>
+
+                        </div>
+                        
+                        <div class="item-inner">
+                            <p class="item-category"><a class="article-category-link" href="/categories/JavaScript/">JavaScript</a></p>
+                            <p class="item-title"><a href="/Understanding-JSFuck/" class="title">Understanding JSFuck</a></p>
+                            <p class="item-date"><time datetime="2017-05-31T23:36:53.000Z" itemprop="datePublished">2017-06-01</time></p>
+                        </div>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">categories</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/JavaScript/">JavaScript</a><span class="category-list-count">5</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">archives</h3>
+        <div class="widget">
+            <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">June 2017</a><span class="archive-list-count">5</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">tags</h3>
+        <div class="widget">
+            <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Automation/">Automation</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BDD/">BDD</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Blessed/">Blessed</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CasperJS/">CasperJS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ES5/">ES5</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ES6/">ES6</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ghost/">Ghost</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JSFuck/">JSFuck</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nightwatch-js/">Nightwatch.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/">Node.js</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OOP/">OOP</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PhantomJS/">PhantomJS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Scraping/">Scraping</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Selenium/">Selenium</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SlimerJS/">SlimerJS</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TDD/">TDD</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Terminal/">Terminal</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Testing/">Testing</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WebDriver/">WebDriver</a><span class="tag-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">tag cloud</h3>
+        <div class="widget tagcloud">
+            <a href="/tags/Automation/" style="font-size: 15px;">Automation</a> <a href="/tags/BDD/" style="font-size: 10px;">BDD</a> <a href="/tags/Blessed/" style="font-size: 10px;">Blessed</a> <a href="/tags/CasperJS/" style="font-size: 10px;">CasperJS</a> <a href="/tags/ES5/" style="font-size: 20px;">ES5</a> <a href="/tags/ES6/" style="font-size: 10px;">ES6</a> <a href="/tags/Ghost/" style="font-size: 10px;">Ghost</a> <a href="/tags/JSFuck/" style="font-size: 10px;">JSFuck</a> <a href="/tags/Nightwatch-js/" style="font-size: 10px;">Nightwatch.js</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/OOP/" style="font-size: 10px;">OOP</a> <a href="/tags/PhantomJS/" style="font-size: 10px;">PhantomJS</a> <a href="/tags/Scraping/" style="font-size: 10px;">Scraping</a> <a href="/tags/Selenium/" style="font-size: 10px;">Selenium</a> <a href="/tags/SlimerJS/" style="font-size: 10px;">SlimerJS</a> <a href="/tags/TDD/" style="font-size: 10px;">TDD</a> <a href="/tags/Terminal/" style="font-size: 10px;">Terminal</a> <a href="/tags/Testing/" style="font-size: 10px;">Testing</a> <a href="/tags/WebDriver/" style="font-size: 10px;">WebDriver</a>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">links</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://stackoverflow.com/q/43474967/6910253">Call ES5 class method from static method</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://stackoverflow.com/q/43081398/6910253">Extend a class with private/protected/public fields and methods</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://stackoverflow.com/q/43551210/6910253">How do I pass constructor parameters to imported class in ECMAScript 6?</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://stackoverflow.com/q/43588722/6910253">Arrow functions vs Fat arrow functions</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://stackoverflow.com/q/43660720/6910253">ES6 JavaScript template literals. What they can and can&#39;t do</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://stackoverflow.com/q/43685962/6910253">JS inheritance overriding in constructor?</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://stackoverflow.com/q/43690625/6910253">Arrays. Why does concatenating an empty array with a populated array result in a string?</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://stackoverflow.com/q/43706801/6910253">JavaScript inheritance not working as I expected</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://stackoverflow.com/q/43709005/6910253">let/const/var on global functions in JavaScript</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://stackoverflow.com/q/43723852/6910253">Storing things in objects vs arrays in JavaScript</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://stackoverflow.com/q/43821746/6910253">Convert string to number but keep &#39;+&#39; using JavaScript</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://stackoverflow.com/q/43847347/6910253">How to detect non-system-variables in JavaScript?</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://stackoverflow.com/q/42305351/6910253">JavaScript ES6 class with getters only</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://stackoverflow.com/q/43953538/6910253">Variable References for maintainability/value accuracy</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://stackoverflow.com/q/44079391/6910253">What is the purpose of doing `Object(this)`?</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2017 Baptiste Vannesson<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+    
+    <script>
+    var disqus_config = function () {
+        
+            this.page.url = 'https://badacadabra.github.io/End-to-End-testing-with-Nightwatch-js-TDD-vs-BDD/';
+        
+        this.page.identifier = 'End-to-End-testing-with-Nightwatch-js-TDD-vs-BDD';
+    };
+    (function() { 
+        var d = document, s = d.createElement('script');  
+        s.src = '//' + 'badacadabra' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+
+
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>
