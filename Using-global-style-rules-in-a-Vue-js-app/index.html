@@ -3,17 +3,20 @@
 <head>
     <meta charset="utf-8">
     
-    <title>Category: JavaScript | Yet Another Open Source Blog by Badacadabra | Baptiste Vannesson</title>
+    <title>Using global style rules in a Vue.js app | Yet Another Open Source Blog by Badacadabra | Baptiste Vannesson</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="JavaScript, Vim and GNU/Linux for the win!">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Yet Another Open Source Blog by Badacadabra | Baptiste Vannesson">
-<meta property="og:url" content="https://badacadabra.github.io/categories/JavaScript/index.html">
+    <meta name="description" content="If you are new to vue-cli and its webpack template, you are probably in a situation where you do not really know how to declare global style rules for your project. This article will show you how to d">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Using global style rules in a Vue.js app">
+<meta property="og:url" content="https://badacadabra.github.io/Using-global-style-rules-in-a-Vue-js-app/index.html">
 <meta property="og:site_name" content="Yet Another Open Source Blog by Badacadabra | Baptiste Vannesson">
-<meta property="og:description" content="JavaScript, Vim and GNU/Linux for the win!">
+<meta property="og:description" content="If you are new to vue-cli and its webpack template, you are probably in a situation where you do not really know how to declare global style rules for your project. This article will show you how to d">
+<meta property="og:image" content="https://badacadabra.github.io/images/javascript.png">
+<meta property="og:updated_time" content="2017-08-11T13:54:59.240Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Yet Another Open Source Blog by Badacadabra | Baptiste Vannesson">
-<meta name="twitter:description" content="JavaScript, Vim and GNU/Linux for the win!">
+<meta name="twitter:title" content="Using global style rules in a Vue.js app">
+<meta name="twitter:description" content="If you are new to vue-cli and its webpack template, you are probably in a situation where you do not really know how to declare global style rules for your project. This article will show you how to d">
+<meta name="twitter:image" content="https://badacadabra.github.io/images/javascript.png">
     
 
     
@@ -233,25 +236,21 @@ ga('send', 'pageview');
 </aside>
 
             
-            <section id="main">
-<div class="timeline timeline-wrap">
-    <div class="timeline-row timeline-row-major">
-        <span class="node"><i class="fa fa-folder"></i></span>
-        <h1 class="title">JavaScript</h1>
-    </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
+            <section id="main"><article id="post-Using-global-style-rules-in-a-Vue-js-app" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
                 
     
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/Using-global-style-rules-in-a-Vue-js-app/">Using global style rules in a Vue.js app</a>
+        <h1 class="article-title" itemprop="name">
+            Using global style rules in a Vue.js app
         </h1>
     
 
-                <div class="article-meta">
-                    
+                
+                    <div class="article-meta">
+                        
     <div class="article-date">
         <i class="fa fa-calendar"></i>
         <a href="/Using-global-style-rules-in-a-Vue-js-app/">
@@ -260,239 +259,167 @@ ga('send', 'pageview');
     </div>
 
 
-                    
+                        
     <div class="article-category">
     	<i class="fa fa-folder"></i>
         <a class="article-category-link" href="/categories/JavaScript/">JavaScript</a>
     </div>
 
-                    
+                        
     <div class="article-tag">
         <i class="fa fa-tag"></i>
         <a class="tag-link" href="/tags/CSS/">CSS</a>, <a class="tag-link" href="/tags/Stylus/">Stylus</a>, <a class="tag-link" href="/tags/Vue-js/">Vue.js</a>, <a class="tag-link" href="/tags/Webpack/">Webpack</a>
     </div>
 
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
+                    </div>
                 
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/JavaScript-one-liners-to-show-off/">JavaScript one-liners to show off</a>
-        </h1>
-    
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>If you are new to <strong>vue-cli</strong> and its <strong>webpack</strong> template, you are probably in a situation where you do not really know how to declare global style rules for your project. This article will show you how to do this with standard CSS, but also with a preprocessor. We will use <strong>Stylus</strong> with <strong>stylus-loader</strong>.</p>
+<a id="more"></a>
+<h2 id="Global-CSS-rules"><a href="#Global-CSS-rules" class="headerlink" title="Global CSS rules"></a>Global CSS rules</h2><p>One big strength of Vue.js is its modular nature. Just like the pieces of a puzzle, Vue allows you to build complex applications using components. Each component is ideally represented in a <code>.vue</code> file which contains its own template, script and style. A <em>single file component</em> is a convenient way to encapsulate all the code of a specific building block. But what if we need some global CSS rules, for instance to set the default font family, background image or general media queries?</p>
+<h3 id="Unscoped-style-section-in-App-vue"><a href="#Unscoped-style-section-in-App-vue" class="headerlink" title="Unscoped style section in App.vue"></a>Unscoped style section in <code>App.vue</code></h3><p>Style rules declared in <code>.vue</code> files are processed by Webpack thanks to <strong>vue-loader</strong> and <strong>PostCSS</strong>. When a style section is scoped, these rules only apply to the component in which they are defined. This means that you will not be able to style the body element from a scoped style section. <code>&lt;body&gt;</code> is actually defined in your <code>index.html</code> and is not part of any component template.</p>
+<p>Suppose we are in <code>App.vue</code>. This will not have any effect:</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">scoped</span>&gt;</span><span class="undefined"></span></div><div class="line">  body &#123;</div><div class="line">    background-color: black;</div><div class="line">  &#125;</div><div class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>Now if we remove the <code>scoped</code> attribute, the background color will be set! An unscoped style section for <code>App.vue</code> is therefore a nice place to put some global CSS rules that are not specific to a component. However, <code>App.vue</code> is a component itself, which may be a bit counterintuitive…</p>
+<h3 id="Imports-in-main-js"><a href="#Imports-in-main-js" class="headerlink" title="Imports in main.js"></a>Imports in <code>main.js</code></h3><p>We have seen that style sections from single file components are processed by Webpack. But in fact, you do not really need a style section in a <code>.vue</code> file to give some work to Webpack. You can simply import your CSS as a  dependency in your <code>main.js</code> file:</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> <span class="string">'./assets/css/style.css'</span></div></pre></td></tr></table></figure>
+<p>It works, but it looks weird. Moreover, in a Vue.js project, Webpack is mostly used to compile single file components. So when a stylesheet is not related to any specific component, it might be interesting to put it in the <code>static</code> folder to distinguish it easily.</p>
+<h3 id="Static-stylesheet"><a href="#Static-stylesheet" class="headerlink" title="Static stylesheet"></a>Static stylesheet</h3><p>In the <code>static</code> folder, resources are not processed by Webpack. If you put a <code>style.css</code> in there, you will have to reference it manually in your <code>index.html</code> like so:</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"/static/style.css"</span>&gt;</span></div></pre></td></tr></table></figure>
+<h2 id="Global-Stylus-variables"><a href="#Global-Stylus-variables" class="headerlink" title="Global Stylus variables"></a>Global Stylus variables</h2><p>Webpack relies on <strong>loaders</strong> to process resources. If you use a CSS preprocessor like Sass, Less or Stylus, you will need the corresponding loader for Webpack: <code>sass-loader</code>, <code>less-loader</code> or <code>stylus-loader</code>. For this particular example, we will use Stylus which is the most flexible and easiest to configure in a Vue.js project.</p>
+<p>First of all, install Stylus and its loader in your project: <code>npm i stylus stylus-loader -D</code>. We put these packages in dev dependencies because, of course, they will not be required in production.</p>
+<p>If CSS preprocessors are part of your ordinary workflow, you probably like to create global files that contain some variables or mixins. For example, a common use case is to have all colors from a design in a single file using variables. It is useful since you can then use clear variable names in your code instead of a more obscure hexadecimal notation. In your Vue.js project, you may want to create such a file, named <code>colors.styl</code> (in a <code>stylus</code> folder), with the following content:</p>
+<figure class="highlight"><table><tr><td class="code"><pre><div class="line">$red = #800000</div><div class="line">$green = #41B883</div><div class="line">$blue = #8ED6FB</div></pre></td></tr></table></figure>
+<p>So far so good! There is still an important question, though: how do you include and use that file in your project?</p>
+<h3 id="Raw-import-rule-in-each-style-section"><a href="#Raw-import-rule-in-each-style-section" class="headerlink" title="Raw @import rule in each style section"></a>Raw <code>@import</code> rule in each style section</h3><p>The most basic approach is to import your <code>colors.styl</code> in the style section of each component using the following syntax:</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">lang</span>=<span class="string">"styl"</span> <span class="attr">scoped</span>&gt;</span><span class="css"></span></div><div class="line">  @<span class="keyword">import</span> <span class="string">'../assets/stylus/colors.styl'</span></div><div class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></div></pre></td></tr></table></figure>
+<p><strong>Problem:</strong> it strongly violates the DRY (Don’t Repeat Yourself) principle because you will have to write this rule again and again… In large projects where there are lots of components, this is not a viable solution. If you move your file, you will have to modify your import everywhere.</p>
+<h3 id="import-rule-with-a-Webpack-alias"><a href="#import-rule-with-a-Webpack-alias" class="headerlink" title="@import rule with a Webpack alias"></a><code>@import</code> rule with a Webpack alias</h3><p>A better approach is to use a Webpack alias to avoid repetitive modifications in case you move your <code>styl</code> file. If you installed vue-router through vue-cli, you probably saw some <code>@</code> in import paths. This is actually an alias that corresponds to <code>src</code>. We can then apply the same logic to reference some global Stylus files!</p>
+<p>In the <code>resolve.alias</code> section of your <code>build/webpack.base.conf.js</code>, add this code:</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">styl: path.resolve(__dirname, <span class="string">'../src/assets/stylus'</span>)</div></pre></td></tr></table></figure>
+<p>In your components, you should now be able to import your <code>colors.styl</code> like so:</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">lang</span>=<span class="string">"styl"</span> <span class="attr">scoped</span>&gt;</span><span class="css"></span></div><div class="line">  @<span class="keyword">import</span> <span class="string">'~styl/colors.styl'</span></div><div class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>This is undoubtedly better, but what happens if you rename <code>colors.styl</code> to <code>variables.styl</code>? You will have to modify your imports in all components…</p>
+<h3 id="Import-in-all-components-from-Webpack-config"><a href="#Import-in-all-components-from-Webpack-config" class="headerlink" title="Import in all components from Webpack config"></a>Import in all components from Webpack config</h3><p>The best solution, by far, is to add a <code>plugins</code> section at the end of your <code>webpack.base.conf.js</code> (right after <code>module</code>) with appropriate configuration to enable auto-import.</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>) <span class="comment">// Do not forget to add this dependency, or else you will get an error</span></div><div class="line"></div><div class="line"><span class="comment">// ...</span></div><div class="line"></div><div class="line">plugins: [</div><div class="line">  <span class="keyword">new</span> webpack.LoaderOptionsPlugin(&#123;</div><div class="line">    <span class="attr">options</span>: &#123;</div><div class="line">      <span class="attr">stylus</span>: &#123;</div><div class="line">        <span class="attr">import</span>: [path.resolve(__dirname, <span class="string">'../src/assets/stylus/colors.styl'</span>)]</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;)</div><div class="line">]</div></pre></td></tr></table></figure>
+<p><strong>Restart your dev server.</strong></p>
+<p>You are now ready for the next battle!</p>
 
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/JavaScript-one-liners-to-show-off/">
-            <time datetime="2017-06-17T20:44:09.000Z" itemprop="datePublished">2017-06-17</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/JavaScript/">JavaScript</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/ES5/">ES5</a>, <a class="tag-link" href="/tags/ES6/">ES6</a>
-    </div>
-
-                </div>
-            </div>
+        
         </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/End-to-End-testing-with-Nightwatch-js-TDD-vs-BDD/">End-to-End testing with Nightwatch.js: TDD vs BDD</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/End-to-End-testing-with-Nightwatch-js-TDD-vs-BDD/">
-            <time datetime="2017-06-13T21:43:15.000Z" itemprop="datePublished">2017-06-13</time>
-        </a>
-    </div>
+        <footer class="article-footer">
+            <div class="share-container">
 
 
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/JavaScript/">JavaScript</a>
-    </div>
 
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/Automation/">Automation</a>, <a class="tag-link" href="/tags/ES5/">ES5</a>, <a class="tag-link" href="/tags/Nightwatch-js/">Nightwatch.js</a>, <a class="tag-link" href="/tags/Node-js/">Node.js</a>, <a class="tag-link" href="/tags/Selenium/">Selenium</a>, <a class="tag-link" href="/tags/Testing/">Testing</a>, <a class="tag-link" href="/tags/WebDriver/">WebDriver</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/What-if-JavaScript-was-a-Java-scripting-language/">What if JavaScript was a Java scripting language?</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/What-if-JavaScript-was-a-Java-scripting-language/">
-            <time datetime="2017-06-08T21:51:28.000Z" itemprop="datePublished">2017-06-08</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/JavaScript/">JavaScript</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/ES5/">ES5</a>, <a class="tag-link" href="/tags/ES6/">ES6</a>, <a class="tag-link" href="/tags/Java/">Java</a>, <a class="tag-link" href="/tags/OOP/">OOP</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/Building-a-visual-form-in-your-terminal-emulator-with-Blessed/">Building a visual form in your terminal emulator with Blessed</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/Building-a-visual-form-in-your-terminal-emulator-with-Blessed/">
-            <time datetime="2017-06-05T21:52:43.000Z" itemprop="datePublished">2017-06-05</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/JavaScript/">JavaScript</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/Blessed/">Blessed</a>, <a class="tag-link" href="/tags/ES5/">ES5</a>, <a class="tag-link" href="/tags/Node-js/">Node.js</a>, <a class="tag-link" href="/tags/Terminal/">Terminal</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/Scraping-a-Ghost-blog-with-PhantomJS-and-SlimerJS-using-CasperJS/">Scraping a Ghost blog with PhantomJS and SlimerJS using CasperJS</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/Scraping-a-Ghost-blog-with-PhantomJS-and-SlimerJS-using-CasperJS/">
-            <time datetime="2017-06-03T00:19:49.000Z" itemprop="datePublished">2017-06-03</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/JavaScript/">JavaScript</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/Automation/">Automation</a>, <a class="tag-link" href="/tags/CasperJS/">CasperJS</a>, <a class="tag-link" href="/tags/ES5/">ES5</a>, <a class="tag-link" href="/tags/Ghost/">Ghost</a>, <a class="tag-link" href="/tags/PhantomJS/">PhantomJS</a>, <a class="tag-link" href="/tags/Scraping/">Scraping</a>, <a class="tag-link" href="/tags/SlimerJS/">SlimerJS</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
-                
-    
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/Understanding-JSFuck/">Understanding JSFuck</a>
-        </h1>
-    
-
-                <div class="article-meta">
-                    
-    <div class="article-date">
-        <i class="fa fa-calendar"></i>
-        <a href="/Understanding-JSFuck/">
-            <time datetime="2017-05-31T23:36:53.000Z" itemprop="datePublished">2017-06-01</time>
-        </a>
-    </div>
-
-
-                    
-    <div class="article-category">
-    	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/JavaScript/">JavaScript</a>
-    </div>
-
-                    
-    <div class="article-tag">
-        <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/ES5/">ES5</a>, <a class="tag-link" href="/tags/JSFuck/">JSFuck</a>
-    </div>
-
-                </div>
-            </div>
-        </div>
-    
 </div>
+
+    <a data-url="https://badacadabra.github.io/Using-global-style-rules-in-a-Vue-js-app/" data-id="cj67xxq5n000761c65soakr3n" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+<script>
+    (function ($) {
+        // Prevent duplicate binding
+        if (typeof(__SHARE_BUTTON_BINDED__) === 'undefined' || !__SHARE_BUTTON_BINDED__) {
+            __SHARE_BUTTON_BINDED__ = true;
+        } else {
+            return;
+        }
+        $('body').on('click', function() {
+            $('.article-share-box.on').removeClass('on');
+        }).on('click', '.article-share-link', function(e) {
+            e.stopPropagation();
+
+            var $this = $(this),
+                url = $this.attr('data-url'),
+                encodedUrl = encodeURIComponent(url),
+                id = 'article-share-box-' + $this.attr('data-id'),
+                offset = $this.offset(),
+                box;
+
+            if ($('#' + id).length) {
+                box = $('#' + id);
+
+                if (box.hasClass('on')){
+                    box.removeClass('on');
+                    return;
+                }
+            } else {
+                var html = [
+                    '<div id="' + id + '" class="article-share-box">',
+                        '<input class="article-share-input" value="' + url + '">',
+                        '<div class="article-share-links">',
+                            '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="fa fa-twitter article-share-twitter" target="_blank" title="Twitter"></a>',
+                            '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="fa fa-facebook article-share-facebook" target="_blank" title="Facebook"></a>',
+                            '<a href="http://pinterest.com/pin/create/button/?url=' + encodedUrl + '" class="fa fa-pinterest article-share-pinterest" target="_blank" title="Pinterest"></a>',
+                            '<a href="https://plus.google.com/share?url=' + encodedUrl + '" class="fa fa-google article-share-google" target="_blank" title="Google+"></a>',
+                        '</div>',
+                    '</div>'
+                ].join('');
+
+              box = $(html);
+
+              $('body').append(box);
+            }
+
+            $('.article-share-box.on').hide();
+
+            box.css({
+                top: offset.top + 25,
+                left: offset.left
+            }).addClass('on');
+
+        }).on('click', '.article-share-box', function (e) {
+            e.stopPropagation();
+        }).on('click', '.article-share-box-input', function () {
+            $(this).select();
+        }).on('click', '.article-share-box-link', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            window.open(this.href, 'article-share-box-window-' + Date.now(), 'width=500,height=450');
+        });
+    })(jQuery);
+</script>
+
+            
+    
+        <a href="https://badacadabra.github.io/Using-global-style-rules-in-a-Vue-js-app/#comments" class="article-comment-link disqus-comment-count" data-disqus-url="https://badacadabra.github.io/Using-global-style-rules-in-a-Vue-js-app/">Comments</a>
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/JavaScript-one-liners-to-show-off/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">Older</strong>
+            <div class="article-nav-title">JavaScript one-liners to show off</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    <section id="comments">
+    
+        
+    <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+
+    
+    </section>
+
 </section>
             
                 <aside id="sidebar">
@@ -728,11 +655,13 @@ ga('send', 'pageview');
     <script>
     var disqus_config = function () {
         
-        this.page.identifier = 'undefined';
+            this.page.url = 'https://badacadabra.github.io/Using-global-style-rules-in-a-Vue-js-app/';
+        
+        this.page.identifier = 'Using-global-style-rules-in-a-Vue-js-app';
     };
     (function() { 
         var d = document, s = d.createElement('script');  
-        s.src = '//' + 'badacadabra' + '.disqus.com/count.js';
+        s.src = '//' + 'badacadabra' + '.disqus.com/embed.js';
         s.setAttribute('data-timestamp', +new Date());
         (d.head || d.body).appendChild(s);
     })();

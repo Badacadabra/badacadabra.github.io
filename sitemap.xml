@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://badacadabra.github.io/Using-global-style-rules-in-a-Vue-js-app/</loc>
+    
+    <lastmod>2017-08-11T13:54:59.240Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://badacadabra.github.io/JavaScript-one-liners-to-show-off/</loc>
     
     <lastmod>2017-06-17T20:44:09.436Z</lastmod>
@@ -11,21 +18,21 @@
   <url>
     <loc>https://badacadabra.github.io/End-to-End-testing-with-Nightwatch-js-TDD-vs-BDD/</loc>
     
-    <lastmod>2017-06-14T00:21:05.985Z</lastmod>
+    <lastmod>2017-06-14T00:21:05.986Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://badacadabra.github.io/What-if-JavaScript-was-a-Java-scripting-language/</loc>
     
-    <lastmod>2017-06-13T22:19:19.882Z</lastmod>
+    <lastmod>2017-06-13T22:19:19.883Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://badacadabra.github.io/Scraping-a-Ghost-blog-with-PhantomJS-and-SlimerJS-using-CasperJS/</loc>
     
-    <lastmod>2017-06-13T22:17:42.982Z</lastmod>
+    <lastmod>2017-06-13T22:17:42.983Z</lastmod>
     
   </url>
   
@@ -46,7 +53,7 @@
   <url>
     <loc>https://badacadabra.github.io/Understanding-JSFuck/</loc>
     
-    <lastmod>2017-06-10T21:56:53.176Z</lastmod>
+    <lastmod>2017-06-10T21:56:53.177Z</lastmod>
     
   </url>
   

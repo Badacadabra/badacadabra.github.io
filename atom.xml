@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://badacadabra.github.io/"/>
-  <updated>2017-06-17T20:44:09.436Z</updated>
+  <updated>2017-08-11T13:54:59.240Z</updated>
   <id>https://badacadabra.github.io/</id>
   
   <author>
@@ -14,6 +14,64 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Using global style rules in a Vue.js app</title>
+    <link href="https://badacadabra.github.io/Using-global-style-rules-in-a-Vue-js-app/"/>
+    <id>https://badacadabra.github.io/Using-global-style-rules-in-a-Vue-js-app/</id>
+    <published>2017-08-11T13:54:59.000Z</published>
+    <updated>2017-08-11T13:54:59.240Z</updated>
+    
+    <content type="html"><![CDATA[<p>If you are new to <strong>vue-cli</strong> and its <strong>webpack</strong> template, you are probably in a situation where you do not really know how to declare global style rules for your project. This article will show you how to do this with standard CSS, but also with a preprocessor. We will use <strong>Stylus</strong> with <strong>stylus-loader</strong>.</p>
+<a id="more"></a>
+<h2 id="Global-CSS-rules"><a href="#Global-CSS-rules" class="headerlink" title="Global CSS rules"></a>Global CSS rules</h2><p>One big strength of Vue.js is its modular nature. Just like the pieces of a puzzle, Vue allows you to build complex applications using components. Each component is ideally represented in a <code>.vue</code> file which contains its own template, script and style. A <em>single file component</em> is a convenient way to encapsulate all the code of a specific building block. But what if we need some global CSS rules, for instance to set the default font family, background image or general media queries?</p>
+<h3 id="Unscoped-style-section-in-App-vue"><a href="#Unscoped-style-section-in-App-vue" class="headerlink" title="Unscoped style section in App.vue"></a>Unscoped style section in <code>App.vue</code></h3><p>Style rules declared in <code>.vue</code> files are processed by Webpack thanks to <strong>vue-loader</strong> and <strong>PostCSS</strong>. When a style section is scoped, these rules only apply to the component in which they are defined. This means that you will not be able to style the body element from a scoped style section. <code>&lt;body&gt;</code> is actually defined in your <code>index.html</code> and is not part of any component template.</p>
+<p>Suppose we are in <code>App.vue</code>. This will not have any effect:</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">scoped</span>&gt;</span><span class="undefined"></span></div><div class="line">  body &#123;</div><div class="line">    background-color: black;</div><div class="line">  &#125;</div><div class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>Now if we remove the <code>scoped</code> attribute, the background color will be set! An unscoped style section for <code>App.vue</code> is therefore a nice place to put some global CSS rules that are not specific to a component. However, <code>App.vue</code> is a component itself, which may be a bit counterintuitive…</p>
+<h3 id="Imports-in-main-js"><a href="#Imports-in-main-js" class="headerlink" title="Imports in main.js"></a>Imports in <code>main.js</code></h3><p>We have seen that style sections from single file components are processed by Webpack. But in fact, you do not really need a style section in a <code>.vue</code> file to give some work to Webpack. You can simply import your CSS as a  dependency in your <code>main.js</code> file:</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">import</span> <span class="string">'./assets/css/style.css'</span></div></pre></td></tr></table></figure>
+<p>It works, but it looks weird. Moreover, in a Vue.js project, Webpack is mostly used to compile single file components. So when a stylesheet is not related to any specific component, it might be interesting to put it in the <code>static</code> folder to distinguish it easily.</p>
+<h3 id="Static-stylesheet"><a href="#Static-stylesheet" class="headerlink" title="Static stylesheet"></a>Static stylesheet</h3><p>In the <code>static</code> folder, resources are not processed by Webpack. If you put a <code>style.css</code> in there, you will have to reference it manually in your <code>index.html</code> like so:</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"/static/style.css"</span>&gt;</span></div></pre></td></tr></table></figure>
+<h2 id="Global-Stylus-variables"><a href="#Global-Stylus-variables" class="headerlink" title="Global Stylus variables"></a>Global Stylus variables</h2><p>Webpack relies on <strong>loaders</strong> to process resources. If you use a CSS preprocessor like Sass, Less or Stylus, you will need the corresponding loader for Webpack: <code>sass-loader</code>, <code>less-loader</code> or <code>stylus-loader</code>. For this particular example, we will use Stylus which is the most flexible and easiest to configure in a Vue.js project.</p>
+<p>First of all, install Stylus and its loader in your project: <code>npm i stylus stylus-loader -D</code>. We put these packages in dev dependencies because, of course, they will not be required in production.</p>
+<p>If CSS preprocessors are part of your ordinary workflow, you probably like to create global files that contain some variables or mixins. For example, a common use case is to have all colors from a design in a single file using variables. It is useful since you can then use clear variable names in your code instead of a more obscure hexadecimal notation. In your Vue.js project, you may want to create such a file, named <code>colors.styl</code> (in a <code>stylus</code> folder), with the following content:</p>
+<figure class="highlight"><table><tr><td class="code"><pre><div class="line">$red = #800000</div><div class="line">$green = #41B883</div><div class="line">$blue = #8ED6FB</div></pre></td></tr></table></figure>
+<p>So far so good! There is still an important question, though: how do you include and use that file in your project?</p>
+<h3 id="Raw-import-rule-in-each-style-section"><a href="#Raw-import-rule-in-each-style-section" class="headerlink" title="Raw @import rule in each style section"></a>Raw <code>@import</code> rule in each style section</h3><p>The most basic approach is to import your <code>colors.styl</code> in the style section of each component using the following syntax:</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">lang</span>=<span class="string">"styl"</span> <span class="attr">scoped</span>&gt;</span><span class="css"></span></div><div class="line">  @<span class="keyword">import</span> <span class="string">'../assets/stylus/colors.styl'</span></div><div class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></div></pre></td></tr></table></figure>
+<p><strong>Problem:</strong> it strongly violates the DRY (Don’t Repeat Yourself) principle because you will have to write this rule again and again… In large projects where there are lots of components, this is not a viable solution. If you move your file, you will have to modify your import everywhere.</p>
+<h3 id="import-rule-with-a-Webpack-alias"><a href="#import-rule-with-a-Webpack-alias" class="headerlink" title="@import rule with a Webpack alias"></a><code>@import</code> rule with a Webpack alias</h3><p>A better approach is to use a Webpack alias to avoid repetitive modifications in case you move your <code>styl</code> file. If you installed vue-router through vue-cli, you probably saw some <code>@</code> in import paths. This is actually an alias that corresponds to <code>src</code>. We can then apply the same logic to reference some global Stylus files!</p>
+<p>In the <code>resolve.alias</code> section of your <code>build/webpack.base.conf.js</code>, add this code:</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line">styl: path.resolve(__dirname, <span class="string">'../src/assets/stylus'</span>)</div></pre></td></tr></table></figure>
+<p>In your components, you should now be able to import your <code>colors.styl</code> like so:</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">lang</span>=<span class="string">"styl"</span> <span class="attr">scoped</span>&gt;</span><span class="css"></span></div><div class="line">  @<span class="keyword">import</span> <span class="string">'~styl/colors.styl'</span></div><div class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>This is undoubtedly better, but what happens if you rename <code>colors.styl</code> to <code>variables.styl</code>? You will have to modify your imports in all components…</p>
+<h3 id="Import-in-all-components-from-Webpack-config"><a href="#Import-in-all-components-from-Webpack-config" class="headerlink" title="Import in all components from Webpack config"></a>Import in all components from Webpack config</h3><p>The best solution, by far, is to add a <code>plugins</code> section at the end of your <code>webpack.base.conf.js</code> (right after <code>module</code>) with appropriate configuration to enable auto-import.</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><div class="line"><span class="keyword">var</span> webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>) <span class="comment">// Do not forget to add this dependency, or else you will get an error</span></div><div class="line"></div><div class="line"><span class="comment">// ...</span></div><div class="line"></div><div class="line">plugins: [</div><div class="line">  <span class="keyword">new</span> webpack.LoaderOptionsPlugin(&#123;</div><div class="line">    <span class="attr">options</span>: &#123;</div><div class="line">      <span class="attr">stylus</span>: &#123;</div><div class="line">        <span class="attr">import</span>: [path.resolve(__dirname, <span class="string">'../src/assets/stylus/colors.styl'</span>)]</div><div class="line">      &#125;</div><div class="line">    &#125;</div><div class="line">  &#125;)</div><div class="line">]</div></pre></td></tr></table></figure>
+<p><strong>Restart your dev server.</strong></p>
+<p>You are now ready for the next battle!</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;If you are new to &lt;strong&gt;vue-cli&lt;/strong&gt; and its &lt;strong&gt;webpack&lt;/strong&gt; template, you are probably in a situation where you do not really know how to declare global style rules for your project. This article will show you how to do this with standard CSS, but also with a preprocessor. We will use &lt;strong&gt;Stylus&lt;/strong&gt; with &lt;strong&gt;stylus-loader&lt;/strong&gt;.&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="JavaScript" scheme="https://badacadabra.github.io/categories/JavaScript/"/>
+    
+    
+      <category term="Vue.js" scheme="https://badacadabra.github.io/tags/Vue-js/"/>
+    
+      <category term="Webpack" scheme="https://badacadabra.github.io/tags/Webpack/"/>
+    
+      <category term="CSS" scheme="https://badacadabra.github.io/tags/CSS/"/>
+    
+      <category term="Stylus" scheme="https://badacadabra.github.io/tags/Stylus/"/>
+    
+  </entry>
   
   <entry>
     <title>JavaScript one-liners to show off</title>
@@ -142,7 +200,7 @@
     <link href="https://badacadabra.github.io/End-to-End-testing-with-Nightwatch-js-TDD-vs-BDD/"/>
     <id>https://badacadabra.github.io/End-to-End-testing-with-Nightwatch-js-TDD-vs-BDD/</id>
     <published>2017-06-13T21:43:15.000Z</published>
-    <updated>2017-06-14T00:21:05.985Z</updated>
+    <updated>2017-06-14T00:21:05.986Z</updated>
     
     <content type="html"><![CDATA[<p>Have you ever heard of <strong>Nightwatch.js</strong>, the well-known “<em>Node.js powered End-to-End testing framework</em>“? Here we will experiment with the two main testing components of Nightwatch, dealing with the classicism of <strong>Test-Driven Development</strong> (TDD) and the agility of <strong>Behavior-Driven Development</strong> (BDD).</p>
 <p>To be consistent, let’s test the <a href="http://nightwatchjs.org/" target="_blank" rel="external">Nightwatch</a> official website!</p>
@@ -219,7 +277,7 @@
     <link href="https://badacadabra.github.io/What-if-JavaScript-was-a-Java-scripting-language/"/>
     <id>https://badacadabra.github.io/What-if-JavaScript-was-a-Java-scripting-language/</id>
     <published>2017-06-08T21:51:28.000Z</published>
-    <updated>2017-06-13T22:19:19.882Z</updated>
+    <updated>2017-06-13T22:19:19.883Z</updated>
     
     <content type="html"><![CDATA[<p><em>Meanwhile, in a parallel universe…</em></p>
 <p>JavaScript is a scripting language for the Java Platform and JS scripts should strictly apply the key concepts of <strong>object-oriented programming</strong> (OOP).</p>
@@ -378,7 +436,7 @@
     <link href="https://badacadabra.github.io/Scraping-a-Ghost-blog-with-PhantomJS-and-SlimerJS-using-CasperJS/"/>
     <id>https://badacadabra.github.io/Scraping-a-Ghost-blog-with-PhantomJS-and-SlimerJS-using-CasperJS/</id>
     <published>2017-06-03T00:19:49.000Z</published>
-    <updated>2017-06-13T22:17:42.982Z</updated>
+    <updated>2017-06-13T22:17:42.983Z</updated>
     
     <content type="html"><![CDATA[<p>This blog post will haunt your computer forever. You have been warned! :D</p>
 <p>In this article, we are going to present different techniques to scrape a <strong>Ghost</strong> blog (especially with the default <strong>Casper</strong> theme). We will use <strong>CasperJS</strong>, which is a scripting utility for <strong>PhantomJS</strong> (WebKit headless browser) and <strong>SlimerJS</strong> (Gecko minimalist GUI browser).</p>
@@ -457,7 +515,7 @@
     <link href="https://badacadabra.github.io/Understanding-JSFuck/"/>
     <id>https://badacadabra.github.io/Understanding-JSFuck/</id>
     <published>2017-05-31T23:36:53.000Z</published>
-    <updated>2017-06-10T21:56:53.176Z</updated>
+    <updated>2017-06-10T21:56:53.177Z</updated>
     
     <content type="html"><![CDATA[<p><em>JavaScript: The Good Parts</em> readers and <strong>Douglas Crockford</strong> fans know that JavaScript subsets matter. Due to the permissive and versatile nature of the language, it is reasonable to select only the most solid stones to build a wall. But hey, why would we need to bother with a full programming language when we just need 6 characters? Here comes <a href="http://www.jsfuck.com/" target="_blank" rel="external"><strong>JSFuck</strong></a> by <strong>Martin Kleppe</strong>…</p>
 <a id="more"></a>
